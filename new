@@ -1,0 +1,12 @@
+#!/bin/bash
+if [ -e ~/templates/$1 ]; then
+ if [ ! $2 ]; then
+  echo "error: no name"
+ else
+  cp -i ~/templates/$1 $2.$1
+  echo "done: $2.$1"
+ fi
+else
+ echo "error: no type"
+fi
+exit 0

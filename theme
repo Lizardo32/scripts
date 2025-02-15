@@ -1,0 +1,68 @@
+#!/bin/bash
+GTK3="$HOME/.config/gtk-3.0/settings.ini"
+
+if [[ $1 == "-t" ]];then
+ DIR="$HOME/.themes/"
+ INDEX=($(find $DIR -maxdepth 1 -type d))
+ MAX=$((${#INDEX[@]}-1))
+ echo ""
+ echo "GTK3 Themes"
+ echo "====-=-=---- - - "
+ for (( NUM=1; NUM < $MAX+1; ++NUM ));do
+  echo $NUM - ${INDEX[NUM]#$DIR}
+ done
+ echo ""
+ 
+ read -p "n>>" INPUT
+ if ! [ $INPUT -eq $INPUT 2>/dev/null ];then
+  echo "Error: Invalid input."
+  exit 1
+ fi
+ if [ $INPUT -lt 1 ] || [ $INPUT -gt $MAX ]; then
+  echo "Warn: Invalid choice."
+  exit 1
+ else
+  CHOICE=${INDEX[INPUT]#$DIR}
+  echo "Done: Theme is now \"$CHOICE\"."
+  sed -i "2s/.*/gtk-theme-name=$CHOICE/" $GTK3
+  gsettings set org.gnome.desktop.interface gtk-theme $CHOICE
+ fi
+
+elif [[ $1 == "-i" ]];then
+ DIR="$HOME/.icons/"
+ INDEX=($(find $DIR -maxdepth 1 -type d))
+ MAX=$((${#INDEX[@]}-1))
+ 
+ echo ""
+ echo "GTK3 Icon Themes"
+ echo "====-=-=---- - - "
+ for (( NUM=1; NUM < $MAX+1; ++NUM ));do
+  echo $NUM - ${INDEX[NUM]#$DIR}
+ done
+ echo ""
+
+ read -p "n>>" INPUT
+ if ! [ $INPUT -eq $INPUT 2>/dev/null ];then
+  echo "Error: Invalid input."
+  exit 1
+ fi
+ if [ $INPUT -lt 1 ] || [ $INPUT -gt $MAX ]; then
+  echo "Warn: Invalid choice."
+  exit 1
+ else
+  CHOICE=${INDEX[INPUT]#$DIR}
+  echo "Done: Icon theme is now \"$CHOICE\"."
+  sed -i "3s/.*/gtk-icon-theme-name=$CHOICE/" $GTK3
+  gsettings set org.gnome.desktop.interface icon-theme $CHOICE
+ fi
+
+else
+echo ""
+ echo "Usage: theme [options]"
+ echo "====-=-=---- - -"
+ echo "-t - gtk themes"
+ echo "-i - gtk icon themes"
+fi
+
+echo ""
+exit 0

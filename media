@@ -1,0 +1,37 @@
+#!/bin/bash
+DIR="/dev"
+MNT="/media"
+INDEX=($(find $DIR -iname "sd"))
+MAX=$((${#INDEX[@]}-1))
+ID=$(id -u)
+
+echo ""
+echo "Avaliable"
+echo "====-=-=---- - - "
+find $DIR -iname "cd*"
+find $DIR -iname "sd*"
+echo ""
+echo "Mounted"
+echo "====-=-=---- - - "
+ls -1 $MNT
+echo ""
+
+read -p "dev>>" INPUT
+if [ -z $INPUT ];then
+ echo "Error: Cannot be NULL"
+elif [ -d $MNT/$INPUT ];then
+ echo "OK: Unmounting $INPUT" 
+ sudo umount $MNT/$INPUT
+ sudo rmdir $MNT/$INPUT
+elif [ -e $DIR/$INPUT ];then
+ echo "OK: Mounting $INPUT"
+ sudo mkdir $MNT/$INPUT
+ sudo mount -o uid=$ID $DIR/$INPUT $MNT/$INPUT
+else
+ echo "Error: $INPUT not present."
+ echo ""
+ exit 0
+fi
+
+echo ""
+exit 0
